@@ -83,7 +83,7 @@ void main() {
     expect(calc.expression, "1 + 3");
     calc.allClear();
     expect(calc.displayString, "0");
-    expect(calc.expression, "");
+    expect(calc.expression, "0");
   });
   test('percent test', () {
     Calculator calc = Calculator();

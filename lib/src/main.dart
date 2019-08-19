@@ -14,6 +14,9 @@ class CalculatorThemeData {
   /// The color to use when painting the line.
   final Color borderColor;
 
+  /// Width of the divider border, which is usually 1.0.
+  final double borderWidth;
+
   /// The color of the display panel background.
   final Color displayColor;
 
@@ -46,6 +49,7 @@ class CalculatorThemeData {
 
   const CalculatorThemeData(
       {this.displayColor,
+      this.borderWidth = 1.0,
       this.expressionColor,
       this.borderColor,
       this.operatorColor,
@@ -83,6 +87,9 @@ class SimpleCalculator extends StatefulWidget {
   /// Visual properties for this widget.
   final CalculatorThemeData theme;
 
+  /// Whether to show surrounding borders.
+  final bool hideSurroundingBorder;
+
   /// Whether to show expression area.
   final bool hideExpression;
 
@@ -106,6 +113,7 @@ class SimpleCalculator extends StatefulWidget {
     this.onChanged,
     this.numberFormat,
     this.maximumDigits = 10,
+    this.hideSurroundingBorder = false,
   }) : super(key: key);
 
   @override
@@ -126,8 +134,11 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   @override
   Widget build(BuildContext context) {
-    _borderSide = Divider.createBorderSide(context,
-        color: widget.theme?.borderColor ?? Colors.grey[400], width: 1.0);
+    _borderSide = Divider.createBorderSide(
+      context,
+      color: widget.theme?.borderColor ?? Colors.grey[400],
+      width: widget.theme?.borderWidth ?? 1.0,
+    );
     return Column(children: <Widget>[
       Expanded(
         child: _getDisplay(),
@@ -142,6 +153,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_calc != null) return;
     if (widget.numberFormat == null) {
       var myLocale = Localizations.localeOf(context);
       var nf = intl.NumberFormat.decimalPattern(myLocale.toLanguageTag())
@@ -163,6 +175,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       textStyle: _baseStyle,
       borderColor: _borderSide.color,
       textDirection: TextDirection.ltr,
+      hideSurroundingBorder: widget.hideSurroundingBorder,
+      borderWidth: widget.theme?.borderWidth,
       onPressed: (dynamic val) {
         var acLabel;
         switch (val) {
@@ -219,9 +233,10 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: _borderSide,
-          left: _borderSide,
-          right: _borderSide,
+          top: widget.hideSurroundingBorder ? BorderSide.none : _borderSide,
+          left: widget.hideSurroundingBorder ? BorderSide.none : _borderSide,
+          right: widget.hideSurroundingBorder ? BorderSide.none : _borderSide,
+          bottom: widget.hideSurroundingBorder ? _borderSide : BorderSide.none,
         ),
       ),
       child: Column(
@@ -283,7 +298,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       [_nums[0], _calc.numberFormat.symbols.DECIMAL_SEP, "±", "="],
     ].map((items) {
       return items.map((title) {
-        Color color = widget.theme?.numColor;
+        Color color = widget.theme?.numColor ?? Colors.white;
         TextStyle style = widget.theme?.numStyle;
         if (title == "=" ||
             title == "+" ||

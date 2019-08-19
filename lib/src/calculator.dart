@@ -267,6 +267,7 @@ class Calculator {
   void allClear() {
     _expression.clear();
     _display.clear();
+    _expression.setVal(_display);
   }
 
   /// Clear last entry.

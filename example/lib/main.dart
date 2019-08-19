@@ -35,6 +35,7 @@ class _CalcButtonState extends State<CalcButton> {
     var calc = SimpleCalculator(
       value: _currentValue,
       hideExpression: false,
+      hideSurroundingBorder: true,
       onChanged: (key, value, expression) {
         setState(() {
           _currentValue = value;
@@ -43,6 +44,7 @@ class _CalcButtonState extends State<CalcButton> {
       },
       theme: const CalculatorThemeData(
         borderColor: Colors.black,
+        borderWidth: 2,
         displayColor: Colors.black,
         displayStyle: const TextStyle(fontSize: 80, color: Colors.yellow),
         expressionColor: Colors.indigo,
