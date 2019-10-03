@@ -136,7 +136,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   Widget build(BuildContext context) {
     _borderSide = Divider.createBorderSide(
       context,
-      color: widget.theme?.borderColor ?? Colors.grey[400],
+      color: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       width: widget.theme?.borderWidth ?? 1.0,
     );
     return Column(children: <Widget>[
@@ -298,7 +298,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       [_nums[0], _calc.numberFormat.symbols.DECIMAL_SEP, "±", "="],
     ].map((items) {
       return items.map((title) {
-        Color color = widget.theme?.numColor ?? Colors.white;
+        Color color = widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
         TextStyle style = widget.theme?.numStyle;
         if (title == "=" ||
             title == "+" ||
@@ -314,7 +314,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
             title == "→" ||
             title == "C" ||
             title == "AC") {
-          color = widget.theme?.commandColor ?? Colors.grey[300];
+          color = widget.theme?.commandColor ?? Theme.of(context).splashColor;
           style = widget.theme?.commandStyle;
         }
         return GridButtonItem(

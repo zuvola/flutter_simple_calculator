@@ -1,6 +1,6 @@
 name: flutter_simple_calculator
 description: Flutter widget that provides simple calculator. You can easily integrate a calculator to your apps.
-version: 1.0.1
+version: 1.0.2
 author: zuvola <zuvola@gmail.com>
 homepage: https://github.com/zuvola/flutter_simple_calculator
 
@@ -10,9 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_grid_button: ^1.1.5
-  intl: ^0.15.8
-  auto_size_text: ^2.0.2
+  intl: ^0.16.0
+  flutter_grid_button: ^1.1.6
+  auto_size_text: ^2.1.0
   expressions: ^0.1.2
 
 dev_dependencies:
