@@ -42,6 +42,9 @@ class _CalcButtonState extends State<CalcButton> {
         });
         print("$key\t$value\t$expression");
       },
+      onTappedDisplay: (value, details) {
+        print("$value\t${details.globalPosition}");
+      },
       theme: const CalculatorThemeData(
         borderColor: Colors.black,
         borderWidth: 2,

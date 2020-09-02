@@ -99,6 +99,9 @@ class SimpleCalculator extends StatefulWidget {
   /// Called when the button is tapped or the value is changed.
   final CalcChanged onChanged;
 
+  /// Called when the display area is tapped.
+  final Function(double, TapDownDetails) onTappedDisplay;
+
   /// The [NumberFormat] used for display
   final intl.NumberFormat numberFormat;
 
@@ -111,6 +114,7 @@ class SimpleCalculator extends StatefulWidget {
     this.hideExpression = false,
     this.value = 0,
     this.onChanged,
+    this.onTappedDisplay,
     this.numberFormat,
     this.maximumDigits = 10,
     this.hideSurroundingBorder = false,
@@ -244,18 +248,24 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
         children: <Widget>[
           Expanded(
             flex: 3,
-            child: Container(
-              color: widget.theme?.displayColor,
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18, right: 18),
-                  child: AutoSizeText(
-                    _displayValue,
-                    style: widget.theme?.displayStyle ??
-                        const TextStyle(fontSize: 50),
-                    maxLines: 1,
-                    textDirection: TextDirection.ltr,
+            child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTapDown: (details) => widget.onTappedDisplay == null
+                  ? null
+                  : widget.onTappedDisplay(_calc.displayValue, details),
+              child: Container(
+                color: widget.theme?.displayColor,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 18, right: 18),
+                    child: AutoSizeText(
+                      _displayValue,
+                      style: widget.theme?.displayStyle ??
+                          const TextStyle(fontSize: 50),
+                      maxLines: 1,
+                      textDirection: TextDirection.ltr,
+                    ),
                   ),
                 ),
               ),
@@ -298,7 +308,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       [_nums[0], _calc.numberFormat.symbols.DECIMAL_SEP, "±", "="],
     ].map((items) {
       return items.map((title) {
-        Color color = widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
+        Color color =
+            widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
         TextStyle style = widget.theme?.numStyle;
         if (title == "=" ||
             title == "+" ||
@@ -308,7 +319,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
           style = widget.theme?.operatorStyle ??
               _baseStyle.copyWith(
-                  color: Theme.of(context).primaryTextTheme.title.color);
+                  color: Theme.of(context).primaryTextTheme.headline6.color);
         }
         if (title == _calc.numberFormat.symbols.PERCENT ||
             title == "→" ||
