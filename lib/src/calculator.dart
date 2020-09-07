@@ -225,8 +225,6 @@ class Calculator {
 
   /// Set the value.
   void setValue(double val) {
-    allClear();
-    _operated = false;
     _display.setValue(val);
     _expression.setVal(_display);
   }
@@ -241,7 +239,6 @@ class Calculator {
     }
     if (_operated) {
       allClear();
-      _operated = false;
     }
     _display.addDigit(digit);
     _expression.setVal(_display);
@@ -257,7 +254,6 @@ class Calculator {
     }
     if (_operated) {
       allClear();
-      _operated = false;
     }
     _display.addPoint();
     _expression.setVal(_display);
@@ -268,6 +264,7 @@ class Calculator {
     _expression.clear();
     _display.clear();
     _expression.setVal(_display);
+    _operated = false;
   }
 
   /// Clear last entry.

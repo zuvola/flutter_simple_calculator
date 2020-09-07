@@ -1,3 +1,6 @@
+## [1.0.4]
+- Added `CalcController`.
+
 ## [1.0.3]
 - Added `SimpleCalculator.onTappedDisplay`.
 

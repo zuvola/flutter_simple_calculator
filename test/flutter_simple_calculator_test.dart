@@ -29,6 +29,7 @@ void main() {
     await tester.tap(find.widgetWithText(FlatButton, "="));
     expect(currentKey, equals("="));
     expect(currentVal, equals(1240.0));
+    await tester.pump(Duration(seconds: 1));
     await tester.tap(find.widgetWithText(FlatButton, "AC"));
     expect(currentKey, equals("AC"));
     expect(currentVal, equals(0.0));
