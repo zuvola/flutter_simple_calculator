@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 
 /// Display value for the [Calculator].
 class CalcDisplay {
-  String string;
+  String string = '';
   double value = 0;
 
   /// The [NumberFormat] used for display
@@ -82,7 +82,7 @@ class CalcDisplay {
   }
 
   void _reformat() {
-    value = numberFormat.parse(string);
+    value = numberFormat.parse(string) as double;
     if (!string.contains(numberFormat.symbols.DECIMAL_SEP)) {
       string = numberFormat.format(value);
     }
@@ -96,11 +96,11 @@ class CalcExpression {
 
   String value = "";
   String internal = "";
-  String _op;
-  String _right;
-  String _rightInternal;
-  String _left;
-  String _lefInternal;
+  String? _op;
+  String? _right;
+  String? _rightInternal;
+  String? _left;
+  String? _lefInternal;
 
   /// Create a [CalcExpression] with [zeroDigit].
   CalcExpression({this.zeroDigit = "0"});
@@ -122,7 +122,7 @@ class CalcExpression {
   /// Perform operations.
   num operate() {
     try {
-      return evaluator.eval(Expression.parse(internal), null);
+      return evaluator.eval(Expression.parse(internal), {});
     } catch (e) {
       print(e);
     }
@@ -135,7 +135,7 @@ class CalcExpression {
       _lefInternal = internal = val.value.toString();
       value = "$_left $_op $_right";
       internal = "$_lefInternal${_convertOperator()}$_rightInternal";
-      val.setValue(operate());
+      val.setValue(operate() as double);
     }
   }
 
@@ -155,11 +155,11 @@ class CalcExpression {
 
   /// Set percent value. The [string] is a string representation and [percent] is a value.
   double setPercent(String string, double percent) {
-    var base = 1.0;
+    double? base = 1.0;
     if (_op == "+" || _op == "-") {
-      base = evaluator.eval(Expression.parse(_lefInternal), null);
+      base = evaluator.eval(Expression.parse(_lefInternal!), {});
     }
-    var val = base * percent / 100;
+    var val = base! * percent / 100;
     if (_op == null) {
       _left = value = string;
       _lefInternal = internal = val.toString();
@@ -187,7 +187,7 @@ class CalcExpression {
   }
 
   String _convertOperator() {
-    return _op.replaceFirst("×", "*").replaceFirst("÷", "/");
+    return _op!.replaceFirst("×", "*").replaceFirst("÷", "/");
   }
 }
 
@@ -281,7 +281,7 @@ class Calculator {
     if (_operated) {
       _expression.repeat(_display);
     } else {
-      _display.setValue(_expression.operate());
+      _display.setValue(_expression.operate() as double);
     }
     _operated = true;
   }

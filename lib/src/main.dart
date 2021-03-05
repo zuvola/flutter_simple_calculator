@@ -9,7 +9,7 @@ import 'calculator.dart';
 
 /// Signature for callbacks that report that the [SimpleCalculator] value has changed.
 typedef CalcChanged = void Function(
-    String key, double value, String expression);
+    String? key, double? value, String? expression);
 
 /// Controller for calculator.
 class CalcController extends ChangeNotifier {
@@ -25,13 +25,13 @@ class CalcController extends ChangeNotifier {
       : _calc = Calculator.numberFormat(numberFormat, maximumDigits);
 
   /// Display string
-  String get display => _calc.displayString;
+  String? get display => _calc.displayString;
 
   /// Display value
-  double get value => _calc.displayValue;
+  double? get value => _calc.displayValue;
 
   /// Expression
-  String get expression => _calc.expression;
+  String? get expression => _calc.expression;
 
   /// Label for the "AC" button, "AC" or "C".
   String get acLabel => _acLabel;
@@ -127,40 +127,40 @@ class CalcController extends ChangeNotifier {
 /// Holds the color and typography values for the [SimpleCalculator].
 class CalculatorThemeData {
   /// The color to use when painting the line.
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Width of the divider border, which is usually 1.0.
   final double borderWidth;
 
   /// The color of the display panel background.
-  final Color displayColor;
+  final Color? displayColor;
 
   /// The background color of the expression area.
-  final Color expressionColor;
+  final Color? expressionColor;
 
   /// The background color of operator buttons.
-  final Color operatorColor;
+  final Color? operatorColor;
 
   /// The background color of command buttons.
-  final Color commandColor;
+  final Color? commandColor;
 
   /// The background color of number buttons.
-  final Color numColor;
+  final Color? numColor;
 
   /// The text style to use for the display panel.
-  final TextStyle displayStyle;
+  final TextStyle? displayStyle;
 
   /// The text style to use for the expression area.
-  final TextStyle expressionStyle;
+  final TextStyle? expressionStyle;
 
   /// The text style to use for operator buttons.
-  final TextStyle operatorStyle;
+  final TextStyle? operatorStyle;
 
   /// The text style to use for command buttons.
-  final TextStyle commandStyle;
+  final TextStyle? commandStyle;
 
   /// The text style to use for number buttons.
-  final TextStyle numStyle;
+  final TextStyle? numStyle;
 
   const CalculatorThemeData(
       {this.displayColor,
@@ -200,7 +200,7 @@ class CalculatorThemeData {
 ///
 class SimpleCalculator extends StatefulWidget {
   /// Visual properties for this widget.
-  final CalculatorThemeData theme;
+  final CalculatorThemeData? theme;
 
   /// Whether to show surrounding borders.
   final bool hideSurroundingBorder;
@@ -212,22 +212,22 @@ class SimpleCalculator extends StatefulWidget {
   final double value;
 
   /// Called when the button is tapped or the value is changed.
-  final CalcChanged onChanged;
+  final CalcChanged? onChanged;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails) onTappedDisplay;
+  final Function(double?, TapDownDetails)? onTappedDisplay;
 
   /// The [NumberFormat] used for display
-  final intl.NumberFormat numberFormat;
+  final intl.NumberFormat? numberFormat;
 
   /// Maximum number of digits on display.
   final int maximumDigits;
 
   /// Controller for calculator.
-  final CalcController controller;
+  final CalcController? controller;
 
   const SimpleCalculator({
-    Key key,
+    Key? key,
     this.theme,
     this.hideExpression = false,
     this.value = 0,
@@ -244,13 +244,11 @@ class SimpleCalculator extends StatefulWidget {
 }
 
 class _SimpleCalculatorState extends State<SimpleCalculator> {
-  CalcController _controller;
-  String _acLabel;
+  CalcController? _controller;
+  String? _acLabel;
 
-  final List<String> _nums = List(10);
-  final _baseStyle = const TextStyle(
-    fontSize: 26,
-  );
+  final List<String> _nums = List.filled(10, '', growable: false);
+  final _baseStyle = const TextStyle(fontSize: 26);
 
   void _initController() {
     if (widget.controller == null) {
@@ -261,22 +259,22 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
         _controller = CalcController.numberFormat(nf, widget.maximumDigits);
       } else {
         _controller = CalcController.numberFormat(
-            widget.numberFormat, widget.maximumDigits);
+            widget.numberFormat!, widget.maximumDigits);
       }
     } else {
       _controller = widget.controller;
     }
-    _controller.addListener(_didChangeCalcValue);
+    _controller!.addListener(_didChangeCalcValue);
   }
 
   @override
   void didChangeDependencies() {
     _initController();
     for (var i = 0; i < 10; i++) {
-      _nums[i] = _controller.numberFormat.format(i);
+      _nums[i] = _controller!.numberFormat.format(i);
     }
-    _controller.allClear();
-    _controller.setValue(widget.value);
+    _controller!.allClear();
+    _controller!.setValue(widget.value);
     super.didChangeDependencies();
   }
 
@@ -284,7 +282,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   void didUpdateWidget(SimpleCalculator oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_didChangeCalcValue);
+      oldWidget.controller!.removeListener(_didChangeCalcValue);
       _initController();
     }
   }
@@ -310,66 +308,67 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   @override
   void dispose() {
-    _controller.removeListener(_didChangeCalcValue);
+    _controller!.removeListener(_didChangeCalcValue);
     super.dispose();
   }
 
   void _didChangeCalcValue() {
-    if (_acLabel == _controller.acLabel) return;
+    if (_acLabel == _controller!.acLabel) return;
     setState(() {
-      _acLabel = _controller.acLabel;
+      _acLabel = _controller!.acLabel;
     });
   }
 
   Widget _getButtons() {
     return GridButton(
-      textStyle: _baseStyle,
+      textStyle: _baseStyle.copyWith(
+          color: Theme.of(context).primaryTextTheme.button?.color),
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
-      borderWidth: widget.theme?.borderWidth,
+      borderWidth: widget.theme?.borderWidth ?? 1,
       onPressed: (dynamic val) {
         switch (val) {
           case "→":
-            _controller.removeDigit();
+            _controller!.removeDigit();
             break;
           case "±":
-            _controller.toggleSign();
+            _controller!.toggleSign();
             break;
           case "+":
-            _controller.setAdditionOp();
+            _controller!.setAdditionOp();
             break;
           case "-":
-            _controller.setSubtractionOp();
+            _controller!.setSubtractionOp();
             break;
           case "×":
-            _controller.setMultiplicationOp();
+            _controller!.setMultiplicationOp();
             break;
           case "÷":
-            _controller.setDivisionOp();
+            _controller!.setDivisionOp();
             break;
           case "=":
-            _controller.operate();
+            _controller!.operate();
             break;
           case "AC":
-            _controller.allClear();
+            _controller!.allClear();
             break;
           case "C":
-            _controller.clear();
+            _controller!.clear();
             break;
           default:
-            if (val == _controller.numberFormat.symbols.DECIMAL_SEP) {
-              _controller.addPoint();
+            if (val == _controller!.numberFormat.symbols.DECIMAL_SEP) {
+              _controller!.addPoint();
             }
-            if (val == _controller.numberFormat.symbols.PERCENT) {
-              _controller.setPercent();
+            if (val == _controller!.numberFormat.symbols.PERCENT) {
+              _controller!.setPercent();
             }
             if (_nums.contains(val)) {
-              _controller.addDigit(_nums.indexOf(val));
+              _controller!.addDigit(_nums.indexOf(val));
             }
         }
         if (widget.onChanged != null) {
-          widget.onChanged(val, _controller.value, _controller.expression);
+          widget.onChanged!(val, _controller!.value, _controller!.expression);
         }
       },
       items: _getItems(),
@@ -377,28 +376,28 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   }
 
   List<List<GridButtonItem>> _getItems() {
+    final operatorStyle = _baseStyle.copyWith(
+        color: Theme.of(context).primaryTextTheme.button?.color);
     return [
-      [_acLabel, "→", _controller.numberFormat.symbols.PERCENT, "÷"],
+      [_acLabel, "→", _controller!.numberFormat.symbols.PERCENT, "÷"],
       [_nums[7], _nums[8], _nums[9], "×"],
       [_nums[4], _nums[5], _nums[6], "-"],
       [_nums[1], _nums[2], _nums[3], "+"],
-      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, "±", "="],
+      [_nums[0], _controller!.numberFormat.symbols.DECIMAL_SEP, "±", "="],
     ].map((items) {
       return items.map((title) {
         Color color =
             widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
-        TextStyle style = widget.theme?.numStyle;
+        TextStyle? style = widget.theme?.numStyle;
         if (title == "=" ||
             title == "+" ||
             title == "-" ||
             title == "×" ||
             title == "÷") {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
-          style = widget.theme?.operatorStyle ??
-              _baseStyle.copyWith(
-                  color: Theme.of(context).primaryTextTheme.headline6.color);
+          style = widget.theme?.operatorStyle ?? operatorStyle;
         }
-        if (title == _controller.numberFormat.symbols.PERCENT ||
+        if (title == _controller!.numberFormat.symbols.PERCENT ||
             title == "→" ||
             title == "C" ||
             title == "AC") {
@@ -417,22 +416,22 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
 class _CalcDisplay extends StatefulWidget {
   /// Whether to show surrounding borders.
-  final bool hideSurroundingBorder;
+  final bool? hideSurroundingBorder;
 
   /// Whether to show expression area.
-  final bool hideExpression;
+  final bool? hideExpression;
 
   /// Visual properties for this widget.
-  final CalculatorThemeData theme;
+  final CalculatorThemeData? theme;
 
   /// Controller for calculator.
-  final CalcController controller;
+  final CalcController? controller;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails) onTappedDisplay;
+  final Function(double?, TapDownDetails)? onTappedDisplay;
 
   const _CalcDisplay({
-    Key key,
+    Key? key,
     this.hideSurroundingBorder,
     this.hideExpression,
     this.onTappedDisplay,
@@ -448,21 +447,21 @@ class _CalcDisplayState extends State<_CalcDisplay> {
   @override
   void initState() {
     super.initState();
-    widget.controller.addListener(_didChangeCalcValue);
+    widget.controller!.addListener(_didChangeCalcValue);
   }
 
   @override
   void didUpdateWidget(_CalcDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_didChangeCalcValue);
-      widget.controller.addListener(_didChangeCalcValue);
+      oldWidget.controller!.removeListener(_didChangeCalcValue);
+      widget.controller!.addListener(_didChangeCalcValue);
     }
   }
 
   @override
   void dispose() {
-    widget.controller.removeListener(_didChangeCalcValue);
+    widget.controller!.removeListener(_didChangeCalcValue);
     super.dispose();
   }
 
@@ -480,22 +479,22 @@ class _CalcDisplayState extends State<_CalcDisplay> {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          left: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          right: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          bottom: widget.hideSurroundingBorder ? borderSide : BorderSide.none,
+          top: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          left: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          right: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          bottom: widget.hideSurroundingBorder! ? borderSide : BorderSide.none,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            flex: 3,
+            flex: 2,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTapDown: (details) => widget.onTappedDisplay == null
                   ? null
-                  : widget.onTappedDisplay(widget.controller.value, details),
+                  : widget.onTappedDisplay!(widget.controller!.value, details),
               child: Container(
                 color: widget.theme?.displayColor,
                 child: Align(
@@ -503,7 +502,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 18, right: 18),
                     child: AutoSizeText(
-                      widget.controller.display,
+                      widget.controller!.display!,
                       style: widget.theme?.displayStyle ??
                           const TextStyle(fontSize: 50),
                       maxLines: 1,
@@ -515,7 +514,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
             ),
           ),
           Visibility(
-            visible: !widget.hideExpression,
+            visible: !widget.hideExpression!,
             child: Expanded(
               child: Container(
                 color: widget.theme?.expressionColor,
@@ -526,7 +525,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                     scrollDirection: Axis.horizontal,
                     reverse: true,
                     child: Text(
-                      widget.controller.expression,
+                      widget.controller!.expression!,
                       style: widget.theme?.expressionStyle ??
                           const TextStyle(color: Colors.grey),
                       maxLines: 1,

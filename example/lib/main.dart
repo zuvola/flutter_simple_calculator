@@ -60,7 +60,7 @@ class _CalcButtonState extends State<CalcButton> {
         numStyle: const TextStyle(fontSize: 50, color: Colors.white),
       ),
     );
-    return OutlineButton(
+    return OutlinedButton(
       child: Text(_currentValue.toString()),
       onPressed: () {
         showModalBottomSheet(
