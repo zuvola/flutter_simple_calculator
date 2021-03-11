@@ -1,3 +1,6 @@
+## [2.0.0-nullsafety.1]
+- Fixed the default text color.
+
 ## [2.0.0-nullsafety.0]
 - Null safety migration
 

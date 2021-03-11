@@ -321,8 +321,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   Widget _getButtons() {
     return GridButton(
-      textStyle: _baseStyle.copyWith(
-          color: Theme.of(context).primaryTextTheme.button?.color),
+      textStyle:
+          _baseStyle.copyWith(color: Theme.of(context).textTheme.button?.color),
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
