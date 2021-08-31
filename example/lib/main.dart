@@ -38,7 +38,7 @@ class _CalcButtonState extends State<CalcButton> {
       hideSurroundingBorder: true,
       onChanged: (key, value, expression) {
         setState(() {
-          _currentValue = value;
+          _currentValue = value ?? 0;
         });
         print("$key\t$value\t$expression");
       },
