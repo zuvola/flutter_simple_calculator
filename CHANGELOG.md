@@ -1,3 +1,9 @@
+## [2.0.0+1]
+- Updated docs.
+
+## [2.0.0]
+- Updated libraries and example.
+
 ## [2.0.0-nullsafety.1]
 - Fixed the default text color.
 
