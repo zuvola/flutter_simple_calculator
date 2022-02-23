@@ -1,18 +1,21 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: Text('SimpleCalculator'),
+          title: const Text('SimpleCalculator'),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(18.0),
+        body: const Padding(
+          padding: EdgeInsets.all(18.0),
           child: SizedBox(
             width: double.infinity,
             child: CalcButton(),
@@ -24,43 +27,49 @@ class MyApp extends StatelessWidget {
 }
 
 class CalcButton extends StatefulWidget {
+  const CalcButton({Key? key}) : super(key: key);
+
   @override
   _CalcButtonState createState() => _CalcButtonState();
 }
 
 class _CalcButtonState extends State<CalcButton> {
-  double _currentValue = 0;
+  double? _currentValue = 0;
   @override
   Widget build(BuildContext context) {
     var calc = SimpleCalculator(
-      value: _currentValue,
+      value: _currentValue!,
       hideExpression: false,
       hideSurroundingBorder: true,
       onChanged: (key, value, expression) {
         setState(() {
           _currentValue = value;
         });
-        print("$key\t$value\t$expression");
+        if (kDebugMode) {
+          print('$key\t$value\t$expression');
+        }
       },
       onTappedDisplay: (value, details) {
-        print("$value\t${details.globalPosition}");
+        if (kDebugMode) {
+          print('$value\t${details.globalPosition}');
+        }
       },
       theme: const CalculatorThemeData(
         borderColor: Colors.black,
         borderWidth: 2,
         displayColor: Colors.black,
-        displayStyle: const TextStyle(fontSize: 80, color: Colors.yellow),
+        displayStyle: TextStyle(fontSize: 80, color: Colors.yellow),
         expressionColor: Colors.indigo,
-        expressionStyle: const TextStyle(fontSize: 20, color: Colors.white),
+        expressionStyle: TextStyle(fontSize: 20, color: Colors.white),
         operatorColor: Colors.pink,
-        operatorStyle: const TextStyle(fontSize: 30, color: Colors.white),
+        operatorStyle: TextStyle(fontSize: 30, color: Colors.white),
         commandColor: Colors.orange,
-        commandStyle: const TextStyle(fontSize: 30, color: Colors.white),
+        commandStyle: TextStyle(fontSize: 30, color: Colors.white),
         numColor: Colors.grey,
-        numStyle: const TextStyle(fontSize: 50, color: Colors.white),
+        numStyle: TextStyle(fontSize: 50, color: Colors.white),
       ),
     );
-    return OutlineButton(
+    return OutlinedButton(
       child: Text(_currentValue.toString()),
       onPressed: () {
         showModalBottomSheet(

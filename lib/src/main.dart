@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grid_button/flutter_grid_button.dart';
@@ -9,7 +7,7 @@ import 'calculator.dart';
 
 /// Signature for callbacks that report that the [SimpleCalculator] value has changed.
 typedef CalcChanged = void Function(
-    String key, double value, String expression);
+    String? key, double? value, String? expression);
 
 /// Controller for calculator.
 class CalcController extends ChangeNotifier {
@@ -127,40 +125,40 @@ class CalcController extends ChangeNotifier {
 /// Holds the color and typography values for the [SimpleCalculator].
 class CalculatorThemeData {
   /// The color to use when painting the line.
-  final Color borderColor;
+  final Color? borderColor;
 
   /// Width of the divider border, which is usually 1.0.
   final double borderWidth;
 
   /// The color of the display panel background.
-  final Color displayColor;
+  final Color? displayColor;
 
   /// The background color of the expression area.
-  final Color expressionColor;
+  final Color? expressionColor;
 
   /// The background color of operator buttons.
-  final Color operatorColor;
+  final Color? operatorColor;
 
   /// The background color of command buttons.
-  final Color commandColor;
+  final Color? commandColor;
 
   /// The background color of number buttons.
-  final Color numColor;
+  final Color? numColor;
 
   /// The text style to use for the display panel.
-  final TextStyle displayStyle;
+  final TextStyle? displayStyle;
 
   /// The text style to use for the expression area.
-  final TextStyle expressionStyle;
+  final TextStyle? expressionStyle;
 
   /// The text style to use for operator buttons.
-  final TextStyle operatorStyle;
+  final TextStyle? operatorStyle;
 
   /// The text style to use for command buttons.
-  final TextStyle commandStyle;
+  final TextStyle? commandStyle;
 
   /// The text style to use for number buttons.
-  final TextStyle numStyle;
+  final TextStyle? numStyle;
 
   const CalculatorThemeData(
       {this.displayColor,
@@ -200,7 +198,7 @@ class CalculatorThemeData {
 ///
 class SimpleCalculator extends StatefulWidget {
   /// Visual properties for this widget.
-  final CalculatorThemeData theme;
+  final CalculatorThemeData? theme;
 
   /// Whether to show surrounding borders.
   final bool hideSurroundingBorder;
@@ -212,22 +210,22 @@ class SimpleCalculator extends StatefulWidget {
   final double value;
 
   /// Called when the button is tapped or the value is changed.
-  final CalcChanged onChanged;
+  final CalcChanged? onChanged;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails) onTappedDisplay;
+  final Function(double, TapDownDetails)? onTappedDisplay;
 
   /// The [NumberFormat] used for display
-  final intl.NumberFormat numberFormat;
+  final intl.NumberFormat? numberFormat;
 
   /// Maximum number of digits on display.
   final int maximumDigits;
 
   /// Controller for calculator.
-  final CalcController controller;
+  final CalcController? controller;
 
   const SimpleCalculator({
-    Key key,
+    Key? key,
     this.theme,
     this.hideExpression = false,
     this.value = 0,
@@ -244,16 +242,17 @@ class SimpleCalculator extends StatefulWidget {
 }
 
 class _SimpleCalculatorState extends State<SimpleCalculator> {
-  CalcController _controller;
-  String _acLabel;
+  late CalcController _controller;
+  String? _acLabel;
 
-  final List<String> _nums = List(10);
+  final List<String?> _nums = List.filled(10, '');
   final _baseStyle = const TextStyle(
     fontSize: 26,
   );
 
   void _initController() {
-    if (widget.controller == null) {
+    final controller = widget.controller;
+    if (controller == null) {
       if (widget.numberFormat == null) {
         var myLocale = Localizations.localeOf(context);
         var nf = intl.NumberFormat.decimalPattern(myLocale.toLanguageTag())
@@ -261,10 +260,10 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
         _controller = CalcController.numberFormat(nf, widget.maximumDigits);
       } else {
         _controller = CalcController.numberFormat(
-            widget.numberFormat, widget.maximumDigits);
+            widget.numberFormat!, widget.maximumDigits);
       }
     } else {
-      _controller = widget.controller;
+      _controller = controller;
     }
     _controller.addListener(_didChangeCalcValue);
   }
@@ -284,7 +283,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   void didUpdateWidget(SimpleCalculator oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller.removeListener(_didChangeCalcValue);
+      oldWidget.controller!.removeListener(_didChangeCalcValue);
       _initController();
     }
   }
@@ -327,34 +326,34 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
-      borderWidth: widget.theme?.borderWidth,
+      borderWidth: widget.theme?.borderWidth ?? 0,
       onPressed: (dynamic val) {
         switch (val) {
-          case "→":
+          case '→':
             _controller.removeDigit();
             break;
-          case "±":
+          case '±':
             _controller.toggleSign();
             break;
-          case "+":
+          case '+':
             _controller.setAdditionOp();
             break;
-          case "-":
+          case '-':
             _controller.setSubtractionOp();
             break;
-          case "×":
+          case '×':
             _controller.setMultiplicationOp();
             break;
-          case "÷":
+          case '÷':
             _controller.setDivisionOp();
             break;
-          case "=":
+          case '=':
             _controller.operate();
             break;
-          case "AC":
+          case 'AC':
             _controller.allClear();
             break;
-          case "C":
+          case 'C':
             _controller.clear();
             break;
           default:
@@ -369,7 +368,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
             }
         }
         if (widget.onChanged != null) {
-          widget.onChanged(val, _controller.value, _controller.expression);
+          widget.onChanged!(val, _controller.value, _controller.expression);
         }
       },
       items: _getItems(),
@@ -378,30 +377,30 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   List<List<GridButtonItem>> _getItems() {
     return [
-      [_acLabel, "→", _controller.numberFormat.symbols.PERCENT, "÷"],
-      [_nums[7], _nums[8], _nums[9], "×"],
-      [_nums[4], _nums[5], _nums[6], "-"],
-      [_nums[1], _nums[2], _nums[3], "+"],
-      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, "±", "="],
+      [_acLabel, '→', _controller.numberFormat.symbols.PERCENT, '÷'],
+      [_nums[7], _nums[8], _nums[9], '×'],
+      [_nums[4], _nums[5], _nums[6], '-'],
+      [_nums[1], _nums[2], _nums[3], '+'],
+      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, '±', '='],
     ].map((items) {
       return items.map((title) {
         Color color =
             widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
-        TextStyle style = widget.theme?.numStyle;
-        if (title == "=" ||
-            title == "+" ||
-            title == "-" ||
-            title == "×" ||
-            title == "÷") {
+        TextStyle? style = widget.theme?.numStyle;
+        if (title == '=' ||
+            title == '+' ||
+            title == '-' ||
+            title == '×' ||
+            title == '÷') {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
           style = widget.theme?.operatorStyle ??
               _baseStyle.copyWith(
-                  color: Theme.of(context).primaryTextTheme.headline6.color);
+                  color: Theme.of(context).primaryTextTheme.headline6!.color);
         }
         if (title == _controller.numberFormat.symbols.PERCENT ||
-            title == "→" ||
-            title == "C" ||
-            title == "AC") {
+            title == '→' ||
+            title == 'C' ||
+            title == 'AC') {
           color = widget.theme?.commandColor ?? Theme.of(context).splashColor;
           style = widget.theme?.commandStyle;
         }
@@ -417,27 +416,27 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
 class _CalcDisplay extends StatefulWidget {
   /// Whether to show surrounding borders.
-  final bool hideSurroundingBorder;
+  final bool? hideSurroundingBorder;
 
   /// Whether to show expression area.
-  final bool hideExpression;
+  final bool? hideExpression;
 
   /// Visual properties for this widget.
-  final CalculatorThemeData theme;
+  final CalculatorThemeData? theme;
 
   /// Controller for calculator.
   final CalcController controller;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails) onTappedDisplay;
+  final Function(double, TapDownDetails)? onTappedDisplay;
 
   const _CalcDisplay({
-    Key key,
+    Key? key,
     this.hideSurroundingBorder,
     this.hideExpression,
-    this.onTappedDisplay,
+    required this.onTappedDisplay,
     this.theme,
-    this.controller,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -480,10 +479,10 @@ class _CalcDisplayState extends State<_CalcDisplay> {
     return Container(
       decoration: BoxDecoration(
         border: Border(
-          top: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          left: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          right: widget.hideSurroundingBorder ? BorderSide.none : borderSide,
-          bottom: widget.hideSurroundingBorder ? borderSide : BorderSide.none,
+          top: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          left: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          right: widget.hideSurroundingBorder! ? BorderSide.none : borderSide,
+          bottom: widget.hideSurroundingBorder! ? borderSide : BorderSide.none,
         ),
       ),
       child: Column(
@@ -495,7 +494,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
               behavior: HitTestBehavior.translucent,
               onTapDown: (details) => widget.onTappedDisplay == null
                   ? null
-                  : widget.onTappedDisplay(widget.controller.value, details),
+                  : widget.onTappedDisplay!(widget.controller.value, details),
               child: Container(
                 color: widget.theme?.displayColor,
                 child: Align(
@@ -515,7 +514,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
             ),
           ),
           Visibility(
-            visible: !widget.hideExpression,
+            visible: !widget.hideExpression!,
             child: Expanded(
               child: Container(
                 color: widget.theme?.expressionColor,
