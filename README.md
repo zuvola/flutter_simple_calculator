@@ -50,8 +50,8 @@ Import the library in your file.
 import 'package:flutter_simple_calculator/flutter_simple_calculator.dart';
 ````
 
-See the `example` directory for a complete sample app using GridButton.
-Or use the GridButton like below.
+See the `example` directory for a complete sample app using SimpleCalculator.
+Or use the SimpleCalculator like below.
 
 ````dart
 SimpleCalculator(

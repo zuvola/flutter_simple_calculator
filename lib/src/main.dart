@@ -23,13 +23,13 @@ class CalcController extends ChangeNotifier {
       : _calc = Calculator.numberFormat(numberFormat, maximumDigits);
 
   /// Display string
-  String get display => _calc.displayString;
+  String? get display => _calc.displayString;
 
   /// Display value
-  double get value => _calc.displayValue;
+  double? get value => _calc.displayValue;
 
   /// Expression
-  String get expression => _calc.expression;
+  String? get expression => _calc.expression;
 
   /// Label for the "AC" button, "AC" or "C".
   String get acLabel => _acLabel;
@@ -213,7 +213,7 @@ class SimpleCalculator extends StatefulWidget {
   final CalcChanged? onChanged;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails)? onTappedDisplay;
+  final Function(double?, TapDownDetails)? onTappedDisplay;
 
   /// The [NumberFormat] used for display
   final intl.NumberFormat? numberFormat;
@@ -245,10 +245,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   late CalcController _controller;
   String? _acLabel;
 
-  final List<String?> _nums = List.filled(10, '');
-  final _baseStyle = const TextStyle(
-    fontSize: 26,
-  );
+  final List<String?> _nums = List.filled(10, '', growable: false);
+  final _baseStyle = const TextStyle(fontSize: 26);
 
   void _initController() {
     final controller = widget.controller;
@@ -322,7 +320,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   Widget _getButtons() {
     return GridButton(
-      textStyle: _baseStyle,
+      textStyle:
+          _baseStyle.copyWith(color: Theme.of(context).textTheme.button?.color),
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
@@ -428,7 +427,7 @@ class _CalcDisplay extends StatefulWidget {
   final CalcController controller;
 
   /// Called when the display area is tapped.
-  final Function(double, TapDownDetails)? onTappedDisplay;
+  final Function(double?, TapDownDetails)? onTappedDisplay;
 
   const _CalcDisplay({
     Key? key,
@@ -489,7 +488,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
-            flex: 3,
+            flex: 2,
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTapDown: (details) => widget.onTappedDisplay == null
@@ -502,7 +501,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 18, right: 18),
                     child: AutoSizeText(
-                      widget.controller.display,
+                      widget.controller.display!,
                       style: widget.theme?.displayStyle ??
                           const TextStyle(fontSize: 50),
                       maxLines: 1,
@@ -525,7 +524,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                     scrollDirection: Axis.horizontal,
                     reverse: true,
                     child: Text(
-                      widget.controller.expression,
+                      widget.controller.expression!,
                       style: widget.theme?.expressionStyle ??
                           const TextStyle(color: Colors.grey),
                       maxLines: 1,

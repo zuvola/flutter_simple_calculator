@@ -95,7 +95,7 @@ class CalcExpression {
   final ExpressionEvaluator evaluator = const ExpressionEvaluator();
   final String zeroDigit;
 
-  String? value = '';
+  String value = '';
   String internal = '';
   String? _op;
   String? _right;
