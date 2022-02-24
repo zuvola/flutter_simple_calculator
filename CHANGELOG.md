@@ -1,3 +1,6 @@
+## [2.0.1]
+- Adopt flutter_lints, update runners
+
 ## [2.0.0+1]
 - Updated docs.
 
