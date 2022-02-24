@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_grid_button/flutter_grid_button.dart';
@@ -244,14 +242,15 @@ class SimpleCalculator extends StatefulWidget {
 }
 
 class _SimpleCalculatorState extends State<SimpleCalculator> {
-  CalcController? _controller;
+  late CalcController _controller;
   String? _acLabel;
 
-  final List<String> _nums = List.filled(10, '', growable: false);
+  final List<String?> _nums = List.filled(10, '', growable: false);
   final _baseStyle = const TextStyle(fontSize: 26);
 
   void _initController() {
-    if (widget.controller == null) {
+    final controller = widget.controller;
+    if (controller == null) {
       if (widget.numberFormat == null) {
         var myLocale = Localizations.localeOf(context);
         var nf = intl.NumberFormat.decimalPattern(myLocale.toLanguageTag())
@@ -262,19 +261,19 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
             widget.numberFormat!, widget.maximumDigits);
       }
     } else {
-      _controller = widget.controller;
+      _controller = controller;
     }
-    _controller!.addListener(_didChangeCalcValue);
+    _controller.addListener(_didChangeCalcValue);
   }
 
   @override
   void didChangeDependencies() {
     _initController();
     for (var i = 0; i < 10; i++) {
-      _nums[i] = _controller!.numberFormat.format(i);
+      _nums[i] = _controller.numberFormat.format(i);
     }
-    _controller!.allClear();
-    _controller!.setValue(widget.value);
+    _controller.allClear();
+    _controller.setValue(widget.value);
     super.didChangeDependencies();
   }
 
@@ -308,14 +307,14 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   @override
   void dispose() {
-    _controller!.removeListener(_didChangeCalcValue);
+    _controller.removeListener(_didChangeCalcValue);
     super.dispose();
   }
 
   void _didChangeCalcValue() {
-    if (_acLabel == _controller!.acLabel) return;
+    if (_acLabel == _controller.acLabel) return;
     setState(() {
-      _acLabel = _controller!.acLabel;
+      _acLabel = _controller.acLabel;
     });
   }
 
@@ -326,49 +325,49 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
-      borderWidth: widget.theme?.borderWidth ?? 1,
+      borderWidth: widget.theme?.borderWidth ?? 0,
       onPressed: (dynamic val) {
         switch (val) {
-          case "→":
-            _controller!.removeDigit();
+          case '→':
+            _controller.removeDigit();
             break;
-          case "±":
-            _controller!.toggleSign();
+          case '±':
+            _controller.toggleSign();
             break;
-          case "+":
-            _controller!.setAdditionOp();
+          case '+':
+            _controller.setAdditionOp();
             break;
-          case "-":
-            _controller!.setSubtractionOp();
+          case '-':
+            _controller.setSubtractionOp();
             break;
-          case "×":
-            _controller!.setMultiplicationOp();
+          case '×':
+            _controller.setMultiplicationOp();
             break;
-          case "÷":
-            _controller!.setDivisionOp();
+          case '÷':
+            _controller.setDivisionOp();
             break;
-          case "=":
-            _controller!.operate();
+          case '=':
+            _controller.operate();
             break;
-          case "AC":
-            _controller!.allClear();
+          case 'AC':
+            _controller.allClear();
             break;
-          case "C":
-            _controller!.clear();
+          case 'C':
+            _controller.clear();
             break;
           default:
-            if (val == _controller!.numberFormat.symbols.DECIMAL_SEP) {
-              _controller!.addPoint();
+            if (val == _controller.numberFormat.symbols.DECIMAL_SEP) {
+              _controller.addPoint();
             }
-            if (val == _controller!.numberFormat.symbols.PERCENT) {
-              _controller!.setPercent();
+            if (val == _controller.numberFormat.symbols.PERCENT) {
+              _controller.setPercent();
             }
             if (_nums.contains(val)) {
-              _controller!.addDigit(_nums.indexOf(val));
+              _controller.addDigit(_nums.indexOf(val));
             }
         }
         if (widget.onChanged != null) {
-          widget.onChanged!(val, _controller!.value, _controller!.expression);
+          widget.onChanged!(val, _controller.value, _controller.expression);
         }
       },
       items: _getItems(),
@@ -376,31 +375,31 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
   }
 
   List<List<GridButtonItem>> _getItems() {
-    final operatorStyle = _baseStyle.copyWith(
-        color: Theme.of(context).primaryTextTheme.button?.color);
     return [
-      [_acLabel, "→", _controller!.numberFormat.symbols.PERCENT, "÷"],
-      [_nums[7], _nums[8], _nums[9], "×"],
-      [_nums[4], _nums[5], _nums[6], "-"],
-      [_nums[1], _nums[2], _nums[3], "+"],
-      [_nums[0], _controller!.numberFormat.symbols.DECIMAL_SEP, "±", "="],
+      [_acLabel, '→', _controller.numberFormat.symbols.PERCENT, '÷'],
+      [_nums[7], _nums[8], _nums[9], '×'],
+      [_nums[4], _nums[5], _nums[6], '-'],
+      [_nums[1], _nums[2], _nums[3], '+'],
+      [_nums[0], _controller.numberFormat.symbols.DECIMAL_SEP, '±', '='],
     ].map((items) {
       return items.map((title) {
         Color color =
             widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
         TextStyle? style = widget.theme?.numStyle;
-        if (title == "=" ||
-            title == "+" ||
-            title == "-" ||
-            title == "×" ||
-            title == "÷") {
+        if (title == '=' ||
+            title == '+' ||
+            title == '-' ||
+            title == '×' ||
+            title == '÷') {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
-          style = widget.theme?.operatorStyle ?? operatorStyle;
+          style = widget.theme?.operatorStyle ??
+              _baseStyle.copyWith(
+                  color: Theme.of(context).primaryTextTheme.headline6!.color);
         }
-        if (title == _controller!.numberFormat.symbols.PERCENT ||
-            title == "→" ||
-            title == "C" ||
-            title == "AC") {
+        if (title == _controller.numberFormat.symbols.PERCENT ||
+            title == '→' ||
+            title == 'C' ||
+            title == 'AC') {
           color = widget.theme?.commandColor ?? Theme.of(context).splashColor;
           style = widget.theme?.commandStyle;
         }
@@ -425,7 +424,7 @@ class _CalcDisplay extends StatefulWidget {
   final CalculatorThemeData? theme;
 
   /// Controller for calculator.
-  final CalcController? controller;
+  final CalcController controller;
 
   /// Called when the display area is tapped.
   final Function(double?, TapDownDetails)? onTappedDisplay;
@@ -434,9 +433,9 @@ class _CalcDisplay extends StatefulWidget {
     Key? key,
     this.hideSurroundingBorder,
     this.hideExpression,
-    this.onTappedDisplay,
+    required this.onTappedDisplay,
     this.theme,
-    this.controller,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -447,21 +446,21 @@ class _CalcDisplayState extends State<_CalcDisplay> {
   @override
   void initState() {
     super.initState();
-    widget.controller!.addListener(_didChangeCalcValue);
+    widget.controller.addListener(_didChangeCalcValue);
   }
 
   @override
   void didUpdateWidget(_CalcDisplay oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
-      oldWidget.controller!.removeListener(_didChangeCalcValue);
-      widget.controller!.addListener(_didChangeCalcValue);
+      oldWidget.controller.removeListener(_didChangeCalcValue);
+      widget.controller.addListener(_didChangeCalcValue);
     }
   }
 
   @override
   void dispose() {
-    widget.controller!.removeListener(_didChangeCalcValue);
+    widget.controller.removeListener(_didChangeCalcValue);
     super.dispose();
   }
 
@@ -494,7 +493,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
               behavior: HitTestBehavior.translucent,
               onTapDown: (details) => widget.onTappedDisplay == null
                   ? null
-                  : widget.onTappedDisplay!(widget.controller!.value, details),
+                  : widget.onTappedDisplay!(widget.controller.value, details),
               child: Container(
                 color: widget.theme?.displayColor,
                 child: Align(
@@ -502,7 +501,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 18, right: 18),
                     child: AutoSizeText(
-                      widget.controller!.display!,
+                      widget.controller.display!,
                       style: widget.theme?.displayStyle ??
                           const TextStyle(fontSize: 50),
                       maxLines: 1,
@@ -525,7 +524,7 @@ class _CalcDisplayState extends State<_CalcDisplay> {
                     scrollDirection: Axis.horizontal,
                     reverse: true,
                     child: Text(
-                      widget.controller!.expression!,
+                      widget.controller.expression!,
                       style: widget.theme?.expressionStyle ??
                           const TextStyle(color: Colors.grey),
                       maxLines: 1,

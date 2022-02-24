@@ -1,6 +1,7 @@
 // Copyright 2019 zuvola. All rights reserved.
 
 import 'package:expressions/expressions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 /// Display value for the [Calculator].
@@ -21,8 +22,8 @@ class CalcDisplay {
   /// Add a digit to the display.
   void addDigit(int digit) {
     var reg = RegExp(
-        "[${numberFormat.symbols.GROUP_SEP}${numberFormat.symbols.DECIMAL_SEP}]");
-    if (string.replaceAll(reg, "").length >= maximumDigits) {
+        '[${numberFormat.symbols.GROUP_SEP}${numberFormat.symbols.DECIMAL_SEP}]');
+    if (string.replaceAll(reg, '').length >= maximumDigits) {
       return;
     }
     if (string == numberFormat.symbols.ZERO_DIGIT) {
@@ -68,7 +69,7 @@ class CalcDisplay {
   /// Toggle between a plus sign and a minus sign.
   void toggleSign() {
     if (value <= 0) {
-      string = string.replaceFirst(numberFormat.symbols.MINUS_SIGN, "");
+      string = string.replaceFirst(numberFormat.symbols.MINUS_SIGN, '');
     } else {
       string = numberFormat.symbols.MINUS_SIGN + string;
     }
@@ -94,8 +95,8 @@ class CalcExpression {
   final ExpressionEvaluator evaluator = const ExpressionEvaluator();
   final String zeroDigit;
 
-  String value = "";
-  String internal = "";
+  String value = '';
+  String internal = '';
   String? _op;
   String? _right;
   String? _rightInternal;
@@ -103,11 +104,11 @@ class CalcExpression {
   String? _lefInternal;
 
   /// Create a [CalcExpression] with [zeroDigit].
-  CalcExpression({this.zeroDigit = "0"});
+  CalcExpression({this.zeroDigit = '0'});
 
   void clear() {
-    value = "";
-    internal = "";
+    value = '';
+    internal = '';
     _op = null;
     _right = null;
     _left = null;
@@ -124,7 +125,9 @@ class CalcExpression {
     try {
       return evaluator.eval(Expression.parse(internal), {});
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return double.nan;
   }
@@ -133,30 +136,28 @@ class CalcExpression {
     if (_right != null) {
       _left = value = val.string;
       _lefInternal = internal = val.value.toString();
-      value = "$_left $_op $_right";
-      internal = "$_lefInternal${_convertOperator()}$_rightInternal";
-      val.setValue(operate() as double);
+      value = '$_left $_op $_right';
+      internal = '$_lefInternal${_convertOperator()}$_rightInternal';
+      val.setValue(operate().toDouble());
     }
   }
 
   /// Set the operation. The [op] must be either +, -, ×, or ÷.
   void setOperator(String op) {
-    if (_left == null) {
-      _left = _lefInternal = zeroDigit;
-    }
+    _left ??= _lefInternal = zeroDigit;
     if (_right != null) {
-      _left = "$_left $_op $_right";
-      _lefInternal = "$_lefInternal${_convertOperator()}$_rightInternal";
+      _left = '$_left $_op $_right';
+      _lefInternal = '$_lefInternal${_convertOperator()}$_rightInternal';
       _right = _rightInternal = null;
     }
     _op = op;
-    value = "$_left $_op ?";
+    value = '$_left $_op ?';
   }
 
   /// Set percent value. The [string] is a string representation and [percent] is a value.
   double setPercent(String string, double percent) {
     double? base = 1.0;
-    if (_op == "+" || _op == "-") {
+    if (_op == '+' || _op == '-') {
       base = evaluator.eval(Expression.parse(_lefInternal!), {});
     }
     var val = base! * percent / 100;
@@ -167,8 +168,8 @@ class CalcExpression {
     } else {
       _right = string;
       _rightInternal = val.toString();
-      value = "$_left $_op $_right";
-      internal = "$_lefInternal${_convertOperator()}$val";
+      value = '$_left $_op $_right';
+      internal = '$_lefInternal${_convertOperator()}$val';
       return val;
     }
   }
@@ -181,13 +182,13 @@ class CalcExpression {
     } else {
       _right = val.string;
       _rightInternal = val.value.toString();
-      value = "$_left $_op $_right";
-      internal = "$_lefInternal${_convertOperator()}$_rightInternal";
+      value = '$_left $_op $_right';
+      internal = '$_lefInternal${_convertOperator()}$_rightInternal';
     }
   }
 
   String _convertOperator() {
-    return _op!.replaceFirst("×", "*").replaceFirst("÷", "/");
+    return _op!.replaceFirst('×', '*').replaceFirst('÷', '/');
   }
 }
 
@@ -281,7 +282,7 @@ class Calculator {
     if (_operated) {
       _expression.repeat(_display);
     } else {
-      _display.setValue(_expression.operate() as double);
+      _display.setValue(_expression.operate().toDouble());
     }
     _operated = true;
   }
@@ -297,7 +298,7 @@ class Calculator {
   void setOperator(String op) {
     if (_check()) return;
     _expression.setOperator(op);
-    if (op == "+" || op == "-") {
+    if (op == '+' || op == '-') {
       operate();
       _operated = false;
     }
