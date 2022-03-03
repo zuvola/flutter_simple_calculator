@@ -41,6 +41,7 @@ class _CalcButtonState extends State<CalcButton> {
       value: _currentValue!,
       hideExpression: false,
       hideSurroundingBorder: true,
+      autofocus: true,
       onChanged: (key, value, expression) {
         setState(() {
           _currentValue = value ?? 0;
