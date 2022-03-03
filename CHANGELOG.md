@@ -1,3 +1,6 @@
+## [2.1.0]
+- Supports hardware keyboard.
+
 ## [2.0.1]
 - Adopt flutter_lints, update runners
 
