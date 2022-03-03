@@ -114,6 +114,9 @@ class SimpleCalculator extends StatefulWidget {
   /// node in its scope is currently focused.
   final bool autofocus;
 
+  /// An optional focus node to use as the focus node for this widget.
+  final FocusNode? focusNode;
+
   /// Controller for calculator.
   final CalcController? controller;
 
@@ -128,6 +131,7 @@ class SimpleCalculator extends StatefulWidget {
     this.maximumDigits = 10,
     this.hideSurroundingBorder = false,
     this.autofocus = false,
+    this.focusNode,
     this.controller,
   }) : super(key: key);
 
@@ -141,7 +145,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
 
   final List<String?> _nums = List.filled(10, '', growable: false);
   final _baseStyle = const TextStyle(fontSize: 26);
-  final _focusNode = FocusNode();
+  FocusNode get _focusNode => widget.focusNode ?? FocusNode();
 
   void _handleKeyEvent(int row, int col) {
     final renderObj = context.findRenderObject();
