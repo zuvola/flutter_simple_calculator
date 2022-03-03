@@ -1,3 +1,6 @@
+## [2.2.0]
+- Added focusNode property.
+
 ## [2.1.0]
 - Supports hardware keyboard.
 
