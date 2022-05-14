@@ -136,16 +136,20 @@ class SimpleCalculator extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _SimpleCalculatorState createState() => _SimpleCalculatorState();
+  SimpleCalculatorState createState() => SimpleCalculatorState();
 }
 
-class _SimpleCalculatorState extends State<SimpleCalculator> {
+class SimpleCalculatorState extends State<SimpleCalculator> {
   late CalcController _controller;
   String? _acLabel;
 
   final List<String?> _nums = List.filled(10, '', growable: false);
   final _baseStyle = const TextStyle(fontSize: 26);
   FocusNode get _focusNode => widget.focusNode ?? FocusNode();
+
+  /// This allows a value of type T or T?
+  /// to be treated as a value of type T?.
+  T? _ambiguate<T>(T? value) => value;
 
   void _handleKeyEvent(int row, int col) {
     final renderObj = context.findRenderObject();
@@ -154,7 +158,7 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
     final cellH = renderObj.size.height / 6;
     final pos = renderObj.localToGlobal(
         Offset(cellW * col + cellW / 2, cellH * (row + 1) + cellH / 2));
-    GestureBinding.instance!
+    _ambiguate(GestureBinding.instance)!
       ..handlePointerEvent(PointerDownEvent(position: pos))
       ..handlePointerEvent(PointerUpEvent(position: pos));
   }
@@ -355,8 +359,8 @@ class _SimpleCalculatorState extends State<SimpleCalculator> {
             ),
           ),
           Expanded(
-            child: _getButtons(),
             flex: 5,
+            child: _getButtons(),
           ),
         ]),
       ),

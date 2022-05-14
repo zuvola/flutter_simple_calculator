@@ -1,3 +1,6 @@
+## [2.2.1]
+- Removed warnings about bindings.
+
 ## [2.2.0]
 - Added focusNode property.
 
