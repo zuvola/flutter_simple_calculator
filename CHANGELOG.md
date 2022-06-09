@@ -1,3 +1,6 @@
+## [2.2.2]
+- CalcController exported.
+
 ## [2.2.1]
 - Removed warnings about bindings.
 
