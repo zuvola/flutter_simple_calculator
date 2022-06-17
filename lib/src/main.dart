@@ -120,6 +120,9 @@ class SimpleCalculator extends StatefulWidget {
   /// Controller for calculator.
   final CalcController? controller;
 
+  /// Builder callback for build custom keyboard or modify default one.
+  final Widget Function(Widget defaultKeyboard)? keyboardBuilder;
+
   const SimpleCalculator({
     Key? key,
     this.theme,
@@ -133,6 +136,7 @@ class SimpleCalculator extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.controller,
+    this.keyboardBuilder,
   }) : super(key: key);
 
   @override
@@ -381,7 +385,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
   }
 
   Widget _getButtons() {
-    return GridButton(
+    final defaultKeyboard = GridButton(
       textStyle:
           _baseStyle.copyWith(color: Theme.of(context).textTheme.button?.color),
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
@@ -435,6 +439,8 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
       },
       items: _getItems(),
     );
+
+    return widget.keyboardBuilder != null ? widget.keyboardBuilder!(defaultKeyboard) : defaultKeyboard;
   }
 
   List<List<GridButtonItem>> _getItems() {
