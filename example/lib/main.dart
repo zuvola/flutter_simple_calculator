@@ -30,10 +30,10 @@ class CalcButton extends StatefulWidget {
   const CalcButton({Key? key}) : super(key: key);
 
   @override
-  _CalcButtonState createState() => _CalcButtonState();
+  CalcButtonState createState() => CalcButtonState();
 }
 
-class _CalcButtonState extends State<CalcButton> {
+class CalcButtonState extends State<CalcButton> {
   double? _currentValue = 0;
   @override
   Widget build(BuildContext context) {
