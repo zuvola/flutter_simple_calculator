@@ -1,3 +1,6 @@
+## [2.2.3]
+- Update packages and dependencies to support Flutter 3.7.0.
+
 ## [2.2.2]
 - Exported CalcController.
 
