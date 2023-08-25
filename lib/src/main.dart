@@ -141,11 +141,11 @@ class SimpleCalculator extends StatefulWidget {
 
 class SimpleCalculatorState extends State<SimpleCalculator> {
   late CalcController _controller;
+  late FocusNode _focusNode;
   String? _acLabel;
 
   final List<String?> _nums = List.filled(10, '', growable: false);
   final _baseStyle = const TextStyle(fontSize: 26);
-  FocusNode get _focusNode => widget.focusNode ?? FocusNode();
 
   /// This allows a value of type T or T?
   /// to be treated as a value of type T?.
@@ -184,6 +184,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
   @override
   void didChangeDependencies() {
     _initController();
+    _focusNode = widget.focusNode ?? FocusNode();
     for (var i = 0; i < 10; i++) {
       _nums[i] = _controller.numberFormat.format(i);
     }
@@ -198,6 +199,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller!.removeListener(_didChangeCalcValue);
       _initController();
+      _focusNode = widget.focusNode ?? FocusNode();
     }
   }
 
@@ -251,40 +253,47 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
           _handleKeyEvent(0, 1);
           return KeyEventResult.handled;
         }
-        if (event.logicalKey == LogicalKeyboardKey.percent) {
+        if (event.logicalKey == LogicalKeyboardKey.percent ||
+            event.character == '%') {
           _handleKeyEvent(0, 2);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.slash ||
-            event.logicalKey == LogicalKeyboardKey.numpadDivide) {
+            event.logicalKey == LogicalKeyboardKey.numpadDivide ||
+            event.character == '/') {
           _handleKeyEvent(0, 3);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.asterisk ||
-            event.logicalKey == LogicalKeyboardKey.numpadMultiply) {
+            event.logicalKey == LogicalKeyboardKey.numpadMultiply ||
+            event.character == '*') {
           _handleKeyEvent(1, 3);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.minus ||
-            event.logicalKey == LogicalKeyboardKey.numpadSubtract) {
+            event.logicalKey == LogicalKeyboardKey.numpadSubtract ||
+            event.character == '-') {
           _handleKeyEvent(2, 3);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.equal ||
             event.logicalKey == LogicalKeyboardKey.enter ||
             event.logicalKey == LogicalKeyboardKey.numpadEnter ||
-            event.logicalKey == LogicalKeyboardKey.numpadEqual) {
+            event.logicalKey == LogicalKeyboardKey.numpadEqual ||
+            event.character == '=') {
           _handleKeyEvent(4, 3);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.add ||
-            event.logicalKey == LogicalKeyboardKey.numpadAdd) {
+            event.logicalKey == LogicalKeyboardKey.numpadAdd ||
+            event.character == '+') {
           _handleKeyEvent(3, 3);
           return KeyEventResult.handled;
         }
         if (event.logicalKey == LogicalKeyboardKey.period ||
             event.logicalKey == LogicalKeyboardKey.comma ||
-            event.logicalKey == LogicalKeyboardKey.numpadDecimal) {
+            event.logicalKey == LogicalKeyboardKey.numpadDecimal ||
+            event.character == '.') {
           _handleKeyEvent(4, 1);
           return KeyEventResult.handled;
         }
