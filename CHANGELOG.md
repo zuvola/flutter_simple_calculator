@@ -1,3 +1,6 @@
+## [2.2.5]
+- Update packages
+
 ## [2.2.4]
 - Fixed an issue where keyboard operations would not work.
 
