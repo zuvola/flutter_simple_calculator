@@ -1,3 +1,6 @@
+## [2.3.0]
+- Use math_expressions instead of expressions
+
 ## [2.2.5]
 - Update packages
 
