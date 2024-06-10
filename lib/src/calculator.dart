@@ -1,8 +1,8 @@
 // Copyright 2019 zuvola. All rights reserved.
 
-import 'package:expressions/expressions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 /// Display value for the [Calculator].
 class CalcDisplay {
@@ -92,7 +92,8 @@ class CalcDisplay {
 
 /// Expression for the [Calculator].
 class CalcExpression {
-  final ExpressionEvaluator evaluator = const ExpressionEvaluator();
+  final Parser parser = Parser();
+  final ContextModel evaluatorContext = ContextModel();
   final String zeroDigit;
 
   String value = '';
@@ -123,7 +124,9 @@ class CalcExpression {
   /// Perform operations.
   num operate() {
     try {
-      return evaluator.eval(Expression.parse(internal), {});
+      return parser
+          .parse(internal)
+          .evaluate(EvaluationType.REAL, evaluatorContext);
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -158,7 +161,9 @@ class CalcExpression {
   double setPercent(String string, double percent) {
     double? base = 1.0;
     if (_op == '+' || _op == '-') {
-      base = evaluator.eval(Expression.parse(_lefInternal!), {});
+      base = parser
+          .parse(_lefInternal!)
+          .evaluate(EvaluationType.REAL, evaluatorContext);
     }
     var val = base! * percent / 100;
     if (_op == null) {
