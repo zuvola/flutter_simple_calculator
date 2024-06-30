@@ -25,7 +25,7 @@ class CalculatorThemeData {
   /// The background color of the expression area.
   final Color? expressionColor;
 
-  /// The background color of operator buttons.
+  /// The background color of operator[÷×-+] buttons.
   final Color? operatorColor;
 
   /// The background color of command buttons.
@@ -34,13 +34,16 @@ class CalculatorThemeData {
   /// The background color of number buttons.
   final Color? numColor;
 
+  /// The background color of equal[=] buttons.
+  final Color? equalColor;
+
   /// The text style to use for the display panel.
   final TextStyle? displayStyle;
 
   /// The text style to use for the expression area.
   final TextStyle? expressionStyle;
 
-  /// The text style to use for operator buttons.
+  /// The text style to use for operator[÷×-+] buttons.
   final TextStyle? operatorStyle;
 
   /// The text style to use for command buttons.
@@ -49,19 +52,25 @@ class CalculatorThemeData {
   /// The text style to use for number buttons.
   final TextStyle? numStyle;
 
-  const CalculatorThemeData(
-      {this.displayColor,
-      this.borderWidth = 1.0,
-      this.expressionColor,
-      this.borderColor,
-      this.operatorColor,
-      this.commandColor,
-      this.numColor,
-      this.displayStyle,
-      this.expressionStyle,
-      this.operatorStyle,
-      this.commandStyle,
-      this.numStyle});
+  /// The text style to use for equal[=] buttons.
+  final TextStyle? equalStyle;
+
+  const CalculatorThemeData({
+    this.displayColor,
+    this.borderWidth = 1.0,
+    this.expressionColor,
+    this.borderColor,
+    this.operatorColor,
+    this.commandColor,
+    this.numColor,
+    this.equalColor,
+    this.displayStyle,
+    this.expressionStyle,
+    this.operatorStyle,
+    this.commandStyle,
+    this.numStyle,
+    this.equalStyle,
+  });
 }
 
 /// SimpleCalculator
@@ -458,16 +467,22 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
         Color color =
             widget.theme?.numColor ?? Theme.of(context).scaffoldBackgroundColor;
         TextStyle? style = widget.theme?.numStyle;
-        if (title == '=' ||
-            title == '+' ||
-            title == '-' ||
-            title == '×' ||
-            title == '÷') {
+
+        if (title == '=') {
+          color = widget.theme?.equalColor ??
+              Theme.of(context).colorScheme.secondary;
+          style = widget.theme?.equalStyle ??
+              _baseStyle.copyWith(
+                  color: Theme.of(context).primaryTextTheme.titleLarge!.color);
+        }
+
+        if (title == '+' || title == '-' || title == '×' || title == '÷') {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
           style = widget.theme?.operatorStyle ??
               _baseStyle.copyWith(
                   color: Theme.of(context).primaryTextTheme.titleLarge!.color);
         }
+
         if (title == _controller.numberFormat.symbols.PERCENT ||
             title == '→' ||
             title == 'C' ||
@@ -475,6 +490,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
           color = widget.theme?.commandColor ?? Theme.of(context).splashColor;
           style = widget.theme?.commandStyle;
         }
+
         return GridButtonItem(
           title: title,
           color: color,
