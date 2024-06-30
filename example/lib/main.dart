@@ -68,6 +68,8 @@ class CalcButtonState extends State<CalcButton> {
         commandStyle: TextStyle(fontSize: 30, color: Colors.white),
         numColor: Colors.grey,
         numStyle: TextStyle(fontSize: 50, color: Colors.white),
+        equalColor: Colors.blue,
+        equalStyle: TextStyle(fontSize: 50, color: Colors.black),
       ),
     );
     return OutlinedButton(
