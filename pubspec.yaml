@@ -9,12 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.18.0
-  flutter_grid_button: ^2.0.0
+  intl: ^0.20.1
+  flutter_grid_button: ^2.1.0
   auto_size_text: ^3.0.0
-  expressions: ^0.2.5
+  expressions: ^0.2.5+2
 
 dev_dependencies:
-  flutter_lints: ^2.0.1
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter

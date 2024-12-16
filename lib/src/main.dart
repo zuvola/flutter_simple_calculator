@@ -383,7 +383,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
   Widget _getButtons() {
     return GridButton(
       textStyle:
-          _baseStyle.copyWith(color: Theme.of(context).textTheme.button?.color),
+          _baseStyle.copyWith(color: Theme.of(context).textTheme.labelLarge?.color),
       borderColor: widget.theme?.borderColor ?? Theme.of(context).dividerColor,
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
@@ -457,7 +457,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
           color = widget.theme?.operatorColor ?? Theme.of(context).primaryColor;
           style = widget.theme?.operatorStyle ??
               _baseStyle.copyWith(
-                  color: Theme.of(context).primaryTextTheme.headline6!.color);
+                  color: Theme.of(context).primaryTextTheme.titleLarge!.color);
         }
         if (title == _controller.numberFormat.symbols.PERCENT ||
             title == '→' ||
