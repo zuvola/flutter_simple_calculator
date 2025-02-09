@@ -1,3 +1,6 @@
+## [2.4.0]
+- Add `equalColor` and `equalStyle`
+
 ## [2.3.0]
 - Use math_expressions instead of expressions
 
