@@ -92,8 +92,8 @@ class CalcDisplay {
 
 /// Expression for the [Calculator].
 class CalcExpression {
-  final Parser parser = Parser();
-  final ContextModel evaluatorContext = ContextModel();
+  final parser = GrammarParser();
+  final evaluator = RealEvaluator();
   final String zeroDigit;
 
   String value = '';
@@ -124,9 +124,8 @@ class CalcExpression {
   /// Perform operations.
   num operate() {
     try {
-      return parser
-          .parse(internal)
-          .evaluate(EvaluationType.REAL, evaluatorContext);
+      final expression = parser.parse(internal);
+      return evaluator.evaluate(expression);
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -159,13 +158,12 @@ class CalcExpression {
 
   /// Set percent value. The [string] is a string representation and [percent] is a value.
   double setPercent(String string, double percent) {
-    double? base = 1.0;
+    double base = 1.0;
     if (_op == '+' || _op == '-') {
-      base = parser
-          .parse(_lefInternal!)
-          .evaluate(EvaluationType.REAL, evaluatorContext);
+      final expression = parser.parse(_lefInternal!);
+      base = evaluator.evaluate(expression).toDouble();
     }
-    var val = base! * percent / 100;
+    var val = base * percent / 100;
     if (_op == null) {
       _left = value = string;
       _lefInternal = internal = val.toString();
@@ -210,7 +208,7 @@ class Calculator {
   final int maximumDigits;
 
   /// Create a [Calculator] with [maximumDigits] is 10 and maximumFractionDigits of [numberFormat] is 6.
-  Calculator({maximumDigits = 10})
+  Calculator({int maximumDigits = 10})
       : this.numberFormat(
             NumberFormat()..maximumFractionDigits = 6, maximumDigits);
 
@@ -221,13 +219,13 @@ class Calculator {
         _display = CalcDisplay(numberFormat, maximumDigits);
 
   /// Display string
-  get displayString => _display.string;
+  String get displayString => _display.string;
 
   /// Display value
-  get displayValue => _display.value;
+  double get displayValue => _display.value;
 
   /// Expression
-  get expression => _expression.value;
+  String get expression => _expression.value;
 
   /// Set the value.
   void setValue(double val) {

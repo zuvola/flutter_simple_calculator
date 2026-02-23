@@ -9,7 +9,7 @@ class CalcController extends ChangeNotifier {
   String _acLabel = 'AC';
 
   /// Create a [CalcController] with [maximumDigits] is 10 and maximumFractionDigits of [numberFormat] is 6.
-  CalcController({maximumDigits = 10})
+  CalcController({int maximumDigits = 10})
       : _calc = Calculator(maximumDigits: maximumDigits);
 
   /// Create a [Calculator].

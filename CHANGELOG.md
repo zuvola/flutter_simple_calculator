@@ -1,3 +1,6 @@
+## [2.5.0]
+- Update dependencies
+
 ## [2.4.0]
 - Add `equalColor` and `equalStyle`
 

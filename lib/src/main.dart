@@ -173,6 +173,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
   }
 
   void _initController() {
+    // print('_initController');
     final controller = widget.controller;
     if (controller == null) {
       if (widget.numberFormat == null) {
@@ -192,6 +193,7 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
 
   @override
   void didChangeDependencies() {
+    // print('didChangeDependencies');
     _initController();
     _focusNode = widget.focusNode ?? FocusNode();
     for (var i = 0; i < 10; i++) {
@@ -204,16 +206,20 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
 
   @override
   void didUpdateWidget(SimpleCalculator oldWidget) {
+    // print('didUpdateWidget');
+    // print(oldWidget.controller);
     super.didUpdateWidget(oldWidget);
     if (widget.controller != oldWidget.controller) {
       oldWidget.controller!.removeListener(_didChangeCalcValue);
       _initController();
       _focusNode = widget.focusNode ?? FocusNode();
+      _controller.setValue(widget.value);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // print('build');
     var metaKey = false;
     return Focus(
       focusNode: _focusNode,
