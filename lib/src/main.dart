@@ -412,7 +412,8 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
       textDirection: TextDirection.ltr,
       hideSurroundingBorder: widget.hideSurroundingBorder,
       borderWidth: widget.theme?.borderWidth ?? 0,
-      onPressed: (dynamic val) {
+      onPressed: (value) {},
+      onTapDown: (dynamic val) {
         _focusNode.requestFocus();
         switch (val) {
           case '→':

@@ -1,3 +1,6 @@
+## [2.6.0]
+- Fixed an issue where clicks were not detected in some cases.
+
 ## [2.5.0]
 - Update dependencies
 
