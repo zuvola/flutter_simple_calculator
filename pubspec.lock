@@ -66,10 +66,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_grid_button
-      sha256: "490b064190e121d22ee9274c9249a7290953f4429807fb5043736bca577dd567"
+      sha256: "6c07b2be0d0b62477e4b0d600a62e21cffc83cc941eb77c23b11d796db5b69d2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:

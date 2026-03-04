@@ -1,3 +1,6 @@
+## [2.7.1]
+- Fixed the issue where right clicks would also respond when using usePointerDown.
+
 ## [2.7.0]
 - Add `usePointerDown`
 
