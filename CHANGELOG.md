@@ -1,3 +1,6 @@
+## [2.7.0]
+- Add `usePointerDown`
+
 ## [2.6.0]
 - Fixed an issue where clicks were not detected in some cases.
 

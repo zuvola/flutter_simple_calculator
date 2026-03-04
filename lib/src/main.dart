@@ -129,6 +129,19 @@ class SimpleCalculator extends StatefulWidget {
   /// Controller for calculator.
   final CalcController? controller;
 
+  /// Whether to use onPointerDown instead of onTapDown for button events.
+  ///
+  /// - `false` (default): Uses onTapDown, which is part of gesture recognition
+  ///   and may have a slight delay as it waits to determine if the gesture is
+  ///   indeed a tap (distinguishing from swipes, long presses, etc.).
+  ///
+  /// - `true`: Uses onPointerDown, which is a lower-level pointer event that
+  ///   fires immediately when the screen is touched, providing more responsive
+  ///   feedback but without gesture disambiguation.
+  ///
+  /// Defaults to false (uses onTapDown).
+  final bool usePointerDown;
+
   const SimpleCalculator({
     super.key,
     this.theme,
@@ -142,6 +155,7 @@ class SimpleCalculator extends StatefulWidget {
     this.autofocus = false,
     this.focusNode,
     this.controller,
+    this.usePointerDown = false,
   });
 
   @override
@@ -404,6 +418,52 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
     });
   }
 
+  void _handleButtonPress(dynamic val) {
+    _focusNode.requestFocus();
+    switch (val) {
+      case '→':
+        _controller.removeDigit();
+        break;
+      case '±':
+        _controller.toggleSign();
+        break;
+      case '+':
+        _controller.setAdditionOp();
+        break;
+      case '-':
+        _controller.setSubtractionOp();
+        break;
+      case '×':
+        _controller.setMultiplicationOp();
+        break;
+      case '÷':
+        _controller.setDivisionOp();
+        break;
+      case '=':
+        _controller.operate();
+        break;
+      case 'AC':
+        _controller.allClear();
+        break;
+      case 'C':
+        _controller.clear();
+        break;
+      default:
+        if (val == _controller.numberFormat.symbols.DECIMAL_SEP) {
+          _controller.addPoint();
+        }
+        if (val == _controller.numberFormat.symbols.PERCENT) {
+          _controller.setPercent();
+        }
+        if (_nums.contains(val)) {
+          _controller.addDigit(_nums.indexOf(val));
+        }
+    }
+    if (widget.onChanged != null) {
+      widget.onChanged!(val, _controller.value, _controller.expression);
+    }
+  }
+
   Widget _getButtons() {
     return GridButton(
       textStyle: _baseStyle.copyWith(
@@ -413,51 +473,8 @@ class SimpleCalculatorState extends State<SimpleCalculator> {
       hideSurroundingBorder: widget.hideSurroundingBorder,
       borderWidth: widget.theme?.borderWidth ?? 0,
       onPressed: (value) {},
-      onTapDown: (dynamic val) {
-        _focusNode.requestFocus();
-        switch (val) {
-          case '→':
-            _controller.removeDigit();
-            break;
-          case '±':
-            _controller.toggleSign();
-            break;
-          case '+':
-            _controller.setAdditionOp();
-            break;
-          case '-':
-            _controller.setSubtractionOp();
-            break;
-          case '×':
-            _controller.setMultiplicationOp();
-            break;
-          case '÷':
-            _controller.setDivisionOp();
-            break;
-          case '=':
-            _controller.operate();
-            break;
-          case 'AC':
-            _controller.allClear();
-            break;
-          case 'C':
-            _controller.clear();
-            break;
-          default:
-            if (val == _controller.numberFormat.symbols.DECIMAL_SEP) {
-              _controller.addPoint();
-            }
-            if (val == _controller.numberFormat.symbols.PERCENT) {
-              _controller.setPercent();
-            }
-            if (_nums.contains(val)) {
-              _controller.addDigit(_nums.indexOf(val));
-            }
-        }
-        if (widget.onChanged != null) {
-          widget.onChanged!(val, _controller.value, _controller.expression);
-        }
-      },
+      onTapDown: widget.usePointerDown ? null : _handleButtonPress,
+      onPointerDown: widget.usePointerDown ? _handleButtonPress : null,
       items: _getItems(),
     );
   }
